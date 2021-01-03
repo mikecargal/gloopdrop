@@ -13,7 +13,7 @@ enum CollectibleType: String {
     case gloop
 }
 
-class Collecibles:SKSpriteNode {
+class Collectible:SKSpriteNode {
     // MARK: - PROPERTIES
     private var collectibleType: CollectibleType = .none
     
