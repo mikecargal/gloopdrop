@@ -33,7 +33,7 @@ class GameScene: SKScene {
         
         player.walk()
         // set up game
-        spawnGloop()
+        spawnMultipleGloops()
     }
     
     // MARK: - TOUCH HANDLING
@@ -51,10 +51,27 @@ class GameScene: SKScene {
     }
     
     // MARK: - GAME FUNCTIONS
+    func spawnMultipleGloops() {
+        // set up repeating action
+        let wait = SKAction.wait(forDuration: TimeInterval(1.0))
+        let spawn = SKAction.run{[unowned self] in self.spawnGloop()}
+        let sequence = SKAction.sequence([wait,spawn])
+        let repeatAction = SKAction.repeat(sequence, count: 10)
+        
+        // run action
+        run(repeatAction,withKey: "gloop")
+    }
     
     func spawnGloop() {
         let collectible = Collectible(collectibleType: CollectibleType.gloop)
-        collectible.position = CGPoint(x: player.position.x, y: player.position.y * 2.5)
+        
+        // set random position
+        let margin = collectible.size.width*2
+        let dropRange = SKRange(lowerLimit: frame.minX+margin, upperLimit: frame.maxX-margin)
+        let randomX = CGFloat.random(in: dropRange.lowerLimit...dropRange.upperLimit)
+        
+        collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
         addChild(collectible)
+        collectible.drop(dropSpeed: TimeInterval(1.0), floorLevel:  player.frame.minY)
     }
 }
