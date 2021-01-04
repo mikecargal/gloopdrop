@@ -11,11 +11,15 @@ import SpriteKit
 class GameScene: SKScene {
     let player = Player()
     let playerSpeed: CGFloat = 1.5
-    var level: Int = 1
+    var level: Int = 8
     var numberOfDrops: Int = 10
     var dropSpeed: CGFloat = 1.0
     var minDropSpeed: CGFloat = 0.12 // fastest drop
     var maxDropSpeed: CGFloat = 1.0 // slowest drop
+    
+    // player movement
+    var movingPlayer = false
+    var lastPosition: CGPoint?
     
     override func didMove(to view: SKView) {
         let background = SKSpriteNode(imageNamed: "background_1")
@@ -44,17 +48,50 @@ class GameScene: SKScene {
     // MARK: - TOUCH HANDLING
     
     func touchDown(atPoint pos: CGPoint) {
-        let direction = pos.x < player.position.x ? PlayerMovementDirection.left : PlayerMovementDirection.right
-        // let distance = hypot(pos.x-player.position.x,pos.y-player.position.y)
-        let distance = abs(pos.x-player.position.x)
-        let calculatedSpeed = TimeInterval(distance / playerSpeed) / 255
-        player.moveToPosition(pos: pos, direction: direction, speed: calculatedSpeed)
+        let touchedNode = atPoint(pos)
+        if touchedNode.name == "player" {
+            movingPlayer = true
+        }
+    }
+    
+    func touchMoved(toPoint pos:CGPoint) {
+        if movingPlayer == true {
+            // clamp position
+            let newPos = CGPoint(x:pos.x,y: player.position.y)
+            player.position = newPos
+            
+            // check last position; if empty set it
+            let recordedPosition = lastPosition ?? player.position
+            if recordedPosition.x > newPos.x {
+                player.xScale = -abs(xScale)
+            } else {
+                player.xScale = abs(xScale)
+            }
+            
+            // save last known position
+            lastPosition = newPos
+        }
+    }
+    
+    func touchUp(atPoint pos: CGPoint) {
+        movingPlayer = false
     }
      
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { touchDown(atPoint: t.location(in: self)) }
     }
     
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches {self.touchMoved(toPoint: t.location(in: self))}
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches {self.touchUp(atPoint: t.location(in: self))}
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches {self.touchMoved(toPoint: t.location(in: self))}
+    }
     // MARK: - GAME FUNCTIONS
 
     func spawnMultipleGloops() {
@@ -70,7 +107,6 @@ class GameScene: SKScene {
         dropSpeed = 1.0 / (CGFloat(level) + CGFloat(level) / CGFloat(numberOfDrops))
         if dropSpeed < minDropSpeed { dropSpeed = minDropSpeed } else if dropSpeed > maxDropSpeed { dropSpeed = maxDropSpeed }
         
-        print(dropSpeed)
         // set up repeating action
         let wait = SKAction.wait(forDuration: TimeInterval(dropSpeed))
         let spawn = SKAction.run { [unowned self] in self.spawnGloop() }
