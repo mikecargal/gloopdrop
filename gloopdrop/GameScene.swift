@@ -17,6 +17,10 @@ class GameScene: SKScene {
     var minDropSpeed: CGFloat = 0.12 // fastest drop
     var maxDropSpeed: CGFloat = 1.0 // slowest drop
     
+    // Labels
+    var scoreLabel = SKLabelNode()
+    var levelLabel = SKLabelNode()
+
     // player movement
     var movingPlayer = false
     var lastPosition: CGPoint?
@@ -46,7 +50,9 @@ class GameScene: SKScene {
         foreground.physicsBody?.collisionBitMask = PhysicsCategory.none
         
         addChild(foreground)
-        
+
+        setupLabels()
+
         // Set up a plyer
         player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
@@ -55,6 +61,35 @@ class GameScene: SKScene {
         player.walk()
         // set up game
         spawnMultipleGloops()
+    }
+    
+    func setupLabels() {
+        // SCORE LABEL
+        scoreLabel.name = "score"
+        scoreLabel.fontName = "Nosifer"
+        scoreLabel.fontColor = .yellow
+        scoreLabel.fontSize = 35.0
+        scoreLabel.horizontalAlignmentMode = .right
+        scoreLabel.verticalAlignmentMode = .center
+        scoreLabel.zPosition = Layer.ui.rawValue
+        scoreLabel.position = CGPoint(x: frame.maxX-50, y: viewTop()-100)
+        
+        scoreLabel.text = "Score: 0"
+        addChild(scoreLabel)
+        
+        // LEVEL LABEL
+        levelLabel.name = "level"
+        levelLabel.fontName = "Nosifer"
+        levelLabel.fontColor = .yellow
+        levelLabel.fontSize = 35.0
+        levelLabel.horizontalAlignmentMode = .left
+        levelLabel.verticalAlignmentMode = .center
+        levelLabel.zPosition = Layer.ui.rawValue
+        levelLabel.position = CGPoint(x: frame.minX+50, y: viewTop()-100)
+        
+        levelLabel.text = "Level: \(level)"
+        
+        addChild(levelLabel)
     }
     
     // MARK: - TOUCH HANDLING

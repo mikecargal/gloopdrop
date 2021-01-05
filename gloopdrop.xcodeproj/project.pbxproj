@@ -15,6 +15,7 @@
 		2795868C25A266290009E4FB /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2795868B25A266290009E4FB /* Player.swift */; };
 		2795868F25A266DA0009E4FB /* SpriteKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2795868E25A266DA0009E4FB /* SpriteKitHelper.swift */; };
 		2795869225A27F7A0009E4FB /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2795869125A27F7A0009E4FB /* Collectible.swift */; };
+		27AAC30125A4E55B00428EA2 /* Nosifer-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		2795868B25A266290009E4FB /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		2795868E25A266DA0009E4FB /* SpriteKitHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteKitHelper.swift; sourceTree = "<group>"; };
 		2795869125A27F7A0009E4FB /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
+		27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nosifer-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				27220A6225A218590023FFE7 /* AppDelegate.swift */,
 				2795869125A27F7A0009E4FB /* Collectible.swift */,
 				27220A6825A218590023FFE7 /* GameScene.swift */,
+				27AAC2FF25A4E4EA00428EA2 /* Fonts */,
 				27220A6A25A218590023FFE7 /* GameViewController.swift */,
 				27220A6C25A218590023FFE7 /* Main.storyboard */,
 				27220A6F25A218590023FFE7 /* Assets.xcassets */,
@@ -71,6 +74,14 @@
 				27220A7125A218590023FFE7 /* Info.plist */,
 			);
 			path = gloopdrop;
+			sourceTree = "<group>";
+		};
+		27AAC2FF25A4E4EA00428EA2 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -131,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				27220A6E25A218590023FFE7 /* Main.storyboard in Resources */,
+				27AAC30125A4E55B00428EA2 /* Nosifer-Regular.ttf in Resources */,
 				27220A7025A218590023FFE7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
