@@ -34,6 +34,14 @@ class Collectible:SKSpriteNode {
         self.name = "co_\(collectibleType)"
         self.anchorPoint = CGPoint(x: 0.5, y: 1.0)
         self.zPosition = Layer.collectible.rawValue
+        
+        // add [hysics body
+        self.physicsBody = SKPhysicsBody(rectangleOf: self.size, center: CGPoint(x: 0.0, y: -self.size.height/2))
+        self.physicsBody?.affectedByGravity = false
+        
+        self.physicsBody?.categoryBitMask = PhysicsCategory.collectible
+        self.physicsBody?.contactTestBitMask = PhysicsCategory.player | PhysicsCategory.foreground
+        self.physicsBody?.collisionBitMask = PhysicsCategory.none
     }
     
     required init?(coder aDecoder:NSCoder) {
@@ -55,5 +63,13 @@ class Collectible:SKSpriteNode {
         //Shrink first, then run fall action
         self.scale(to: CGSize(width: 0.25, height: 1.0))
         self.run(actionSequence,withKey: "drop")
+    }
+    
+    func collected() {
+        self.run(SKAction.removeFromParent())
+    }
+    
+    func missed() {
+        self.run(SKAction.removeFromParent())
     }
 }

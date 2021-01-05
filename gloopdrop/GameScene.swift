@@ -11,7 +11,7 @@ import SpriteKit
 class GameScene: SKScene {
     let player = Player()
     let playerSpeed: CGFloat = 1.5
-    var level: Int = 8
+    var level: Int = 1
     var numberOfDrops: Int = 10
     var dropSpeed: CGFloat = 1.0
     var minDropSpeed: CGFloat = 0.12 // fastest drop
@@ -22,6 +22,9 @@ class GameScene: SKScene {
     var lastPosition: CGPoint?
     
     override func didMove(to view: SKView) {
+        // set up the physics world contact delegate
+        physicsWorld.contactDelegate = self
+        
         let background = SKSpriteNode(imageNamed: "background_1")
         background.anchorPoint = CGPoint(x: 0, y: 0)
         background.position = CGPoint(x: 0, y: 0)
@@ -33,6 +36,15 @@ class GameScene: SKScene {
         foreground.anchorPoint = CGPoint(x: 0, y: 0)
         foreground.position = CGPoint(x: 0, y: 0)
         foreground.zPosition = Layer.foreground.rawValue
+                
+        // add physics body
+        foreground.physicsBody = SKPhysicsBody(edgeLoopFrom: foreground.frame)
+        foreground.physicsBody?.affectedByGravity = false
+        
+        foreground.physicsBody?.categoryBitMask = PhysicsCategory.foreground
+        foreground.physicsBody?.contactTestBitMask = PhysicsCategory.collectible
+        foreground.physicsBody?.collisionBitMask = PhysicsCategory.none
+        
         addChild(foreground)
         
         // Set up a plyer
@@ -128,5 +140,39 @@ class GameScene: SKScene {
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
         addChild(collectible)
         collectible.drop(dropSpeed: TimeInterval(1.0), floorLevel: player.frame.minY)
+    }
+}
+
+// MARK: - COLLISION DETECTION
+
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        // check collision bodies
+        let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        
+        // did the [PLAYER] collide with the [COLLECTIBLE]?
+        if collision == PhysicsCategory.player | PhysicsCategory.collectible {
+            print("player hit collectible")
+            let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
+            contact.bodyA.node :
+            contact.bodyB.node
+            
+            if let sprite = body as? Collectible {
+                sprite.collected()
+            }
+        }
+        if collision == PhysicsCategory.foreground | PhysicsCategory.collectible {
+            print("collectible hit foregrouind")
+            let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
+            contact.bodyA.node :
+            contact.bodyB.node
+            if let sprite = body as? Collectible {
+                sprite.missed()
+            }
+        }
+    }
+
+    func didEnd(_ contact: SKPhysicsContact) {
+        
     }
 }
