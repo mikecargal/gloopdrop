@@ -10,6 +10,13 @@ import SpriteKit
 
 // MARK: - SPRITEKIT HELPERS
 
+enum PhysicsCategory {
+    static let none:        UInt32 = 0
+    static let player:      UInt32 = 0b1
+    static let collectible: UInt32 = 0b10
+    static let foreground:  UInt32 = 0b100
+}
+
 enum Layer: CGFloat {
     case background
     case foreground
@@ -18,17 +25,11 @@ enum Layer: CGFloat {
     case ui
 }
 
-enum PhysicsCategory {
-    static let none:        UInt32 = 0
-    static let player:      UInt32 = 0b1
-    static let collectible: UInt32 = 0b10
-    static let foreground:  UInt32 = 0b100
-}
-
 // MARK: - SPRITEKIT EXTENSIONS
 
 extension SKSpriteNode {
-    func loadTexttures(atlas: String, prefix: String, startsAt: Int, stopsAt: Int) -> [SKTexture] {
+    func loadTexttures(atlas: String, prefix: String,
+                       startsAt: Int, stopsAt: Int) -> [SKTexture] {
         var textureArray = [SKTexture]()
         let texttureAtlas = SKTextureAtlas(named: atlas)
         for i in startsAt ... stopsAt {
@@ -40,8 +41,11 @@ extension SKSpriteNode {
     }
 
     // Start the animation using a name and a count (0 = repeat forever)
-    func startAnimation(textures: [SKTexture], speed: Double, name: String, count: Int, resize: Bool, restore: Bool) {
-        let animation = SKAction.animate(withNormalTextures: textures, timePerFrame: speed, resize: resize, restore: restore)
+    func startAnimation(textures: [SKTexture], speed: Double, name: String,
+                        count: Int, resize: Bool, restore: Bool) {
+        
+        let animation = SKAction.animate(withNormalTextures: textures, timePerFrame: speed,
+                                         resize: resize, restore: restore)
 
         if count == 0 {
             // run animation until stopped

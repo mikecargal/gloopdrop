@@ -11,6 +11,7 @@ import SpriteKit
 // This enum lets you easily switch between animations
 enum PlayerAnimationType: String {
     case walk
+    case die
 }
 
 enum PlayerMovementDirection: String {
@@ -22,12 +23,18 @@ class Player: SKSpriteNode {
     // MARK: - PROPERTIES
     // Textures (Animation)
     private var walkTextures: [SKTexture]?
+    private var dieTextures: [SKTexture]?
     
     // MARK: - INIT
     init() {
         let texture = SKTexture(imageNamed: "blob-walk_0")
         super.init(texture: texture, color: .clear, size: texture.size())
-        self.walkTextures = self.loadTexttures(atlas: "blob", prefix: "blob-walk_", startsAt: 0, stopsAt: 2)
+        
+        self.walkTextures = self.loadTexttures(atlas: "blob", prefix: "blob-walk_",
+                                               startsAt: 0, stopsAt: 2)
+        self.dieTextures = self.loadTexttures(atlas: "blob", prefix: "blob-die_",
+                                              startsAt: 0, stopsAt: 0)
+        
         self.name = "player"
         self.setScale(1.0)
         self.anchorPoint = CGPoint(x: 0.5, y: 0.0)
@@ -58,14 +65,31 @@ class Player: SKSpriteNode {
         guard let walkTextures = walkTextures else {
             preconditionFailure("Could not find textures!")
         }
-        startAnimation(textures: walkTextures, speed: 0.25, name: PlayerAnimationType.walk.rawValue, count: 0, resize: true, restore: true)
+        removeAction(forKey: PlayerAnimationType.die.rawValue)
+        startAnimation(textures: walkTextures, speed: 0.25,
+                       name: PlayerAnimationType.walk.rawValue,
+                       count: 0, resize: true, restore: true)
+    }
+    
+    func die() {
+        print("Player::die()")
+        guard let dieTextures = dieTextures else {
+            preconditionFailure("Could not find die textures!")
+        }
+        print("removeAction(forKey: \(PlayerAnimationType.walk.rawValue))")
+        removeAction(forKey: PlayerAnimationType.walk.rawValue)
+        print("dieTextures=>>\(dieTextures)<<")
+        print("startAnimation(name:\(PlayerAnimationType.die.rawValue))")
+        startAnimation(textures: dieTextures, speed: 0.25,
+                       name: PlayerAnimationType.die.rawValue,
+                       count: 0, resize: true, restore: true)
     }
     
     func moveToPosition(pos:CGPoint,direction: PlayerMovementDirection,speed:TimeInterval) {
         switch direction {
         case .left:
             xScale = -abs(xScale)
-        default:
+        case .right:
             xScale = abs(xScale)
         }
         let moveAction = SKAction.move(to: pos, duration: speed)

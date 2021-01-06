@@ -11,19 +11,36 @@ import SpriteKit
 class GameScene: SKScene {
     let player = Player()
     let playerSpeed: CGFloat = 1.5
-    var level: Int = 1
+    
+    // player movement
+    var movingPlayer = false
+    var lastPosition: CGPoint?
+    
+    var level: Int = 1 {
+        didSet {
+            levelLabel.text = "Level:\(level)"
+        }
+    }
+    
+    var score : Int = 0 {
+        didSet {
+            scoreLabel.text = "Score: \(score)"
+        }
+    }
+    
     var numberOfDrops: Int = 10
+    
     var dropSpeed: CGFloat = 1.0
     var minDropSpeed: CGFloat = 0.12 // fastest drop
     var maxDropSpeed: CGFloat = 1.0 // slowest drop
     
+    // game states
+    var gameInProgress = false
+
     // Labels
     var scoreLabel = SKLabelNode()
     var levelLabel = SKLabelNode()
 
-    // player movement
-    var movingPlayer = false
-    var lastPosition: CGPoint?
     
     override func didMove(to view: SKView) {
         // set up the physics world contact delegate
@@ -54,13 +71,17 @@ class GameScene: SKScene {
         setupLabels()
 
         // Set up a plyer
-        player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
+        player.position = CGPoint(x: size.width/2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
         addChild(player)
         
         player.walk()
         // set up game
-        spawnMultipleGloops()
+      //  spawnMultipleGloops()
+        if gameInProgress == false {
+            spawnMultipleGloops()
+            return
+        }
     }
     
     func setupLabels() {
@@ -145,14 +166,19 @@ class GameScene: SKScene {
         // set number of drops based on the level
         switch level {
         case 1 ... 5: numberOfDrops = level * 10
-        case 6: numberOfDrops = 75
-        case 7: numberOfDrops = 100
-        case 8: numberOfDrops = 150
-        default: numberOfDrops = 150
+        case 6:       numberOfDrops = 75
+        case 7:       numberOfDrops = 100
+        case 8:       numberOfDrops = 150
+        default:      numberOfDrops = 150
         }
+        
         // set up drop spped
         dropSpeed = 1.0 / (CGFloat(level) + CGFloat(level) / CGFloat(numberOfDrops))
-        if dropSpeed < minDropSpeed { dropSpeed = minDropSpeed } else if dropSpeed > maxDropSpeed { dropSpeed = maxDropSpeed }
+        if dropSpeed < minDropSpeed {
+          dropSpeed = minDropSpeed
+        } else if dropSpeed > maxDropSpeed {
+          dropSpeed = maxDropSpeed
+        }
         
         // set up repeating action
         let wait = SKAction.wait(forDuration: TimeInterval(dropSpeed))
@@ -162,6 +188,7 @@ class GameScene: SKScene {
         
         // run action
         run(repeatAction, withKey: "gloop")
+        gameInProgress = true
     }
     
     func spawnGloop() {
@@ -175,6 +202,19 @@ class GameScene: SKScene {
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
         addChild(collectible)
         collectible.drop(dropSpeed: TimeInterval(1.0), floorLevel: player.frame.minY)
+    }
+    
+    // Player FAILED level
+    func gameOver() {
+        gameInProgress = false
+        player.die()
+        removeAction(forKey: "gloop")
+        
+        enumerateChildNodes(withName: "//co_*") {
+            (node, stop) in
+            node.removeAction(forKey: "drop")
+            node.physicsBody = nil
+        }
     }
 }
 
@@ -194,20 +234,20 @@ extension GameScene: SKPhysicsContactDelegate {
             
             if let sprite = body as? Collectible {
                 sprite.collected()
+                score += level
             }
         }
+        
         if collision == PhysicsCategory.foreground | PhysicsCategory.collectible {
-            print("collectible hit foregrouind")
+            print("collectible hit foreground")
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
             contact.bodyA.node :
             contact.bodyB.node
             if let sprite = body as? Collectible {
                 sprite.missed()
+                gameOver()
             }
         }
     }
 
-    func didEnd(_ contact: SKPhysicsContact) {
-        
-    }
 }
