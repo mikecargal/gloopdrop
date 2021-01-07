@@ -22,7 +22,7 @@ class GameScene: SKScene {
         }
     }
     
-    var score : Int = 0 {
+    var score: Int = 0 {
         didSet {
             scoreLabel.text = "Score: \(score)"
         }
@@ -41,7 +41,6 @@ class GameScene: SKScene {
     var scoreLabel = SKLabelNode()
     var levelLabel = SKLabelNode()
 
-    
     override func didMove(to view: SKView) {
         // set up the physics world contact delegate
         physicsWorld.contactDelegate = self
@@ -71,14 +70,13 @@ class GameScene: SKScene {
         setupLabels()
 
         // Set up a plyer
-        player.position = CGPoint(x: size.width/2, y: foreground.frame.maxY)
+        player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
         addChild(player)
         
-        player.walk()
+        // player.walk()
         // set up game
-      //  spawnMultipleGloops()
-
+        // spawnMultipleGloops()
     }
     
     func setupLabels() {
@@ -91,16 +89,16 @@ class GameScene: SKScene {
         addChild(scoreLabel)
         
         // LEVEL LABEL
-        commonLabelInit(label:  levelLabel)
+        commonLabelInit(label: levelLabel)
         levelLabel.horizontalAlignmentMode = .left
-        levelLabel.position = CGPoint(x: frame.minX+50, y: viewTop()-100)
+        levelLabel.position = CGPoint(x: frame.minX + 50, y: viewTop()-100)
         
         levelLabel.text = "Level: \(level)"
         
         addChild(levelLabel)
     }
     
-    func commonLabelInit(label:SKLabelNode)  {
+    func commonLabelInit(label: SKLabelNode) {
         label.name = "score"
         label.fontName = "Nosifer"
         label.fontColor = .yellow
@@ -122,10 +120,10 @@ class GameScene: SKScene {
         }
     }
     
-    func touchMoved(toPoint pos:CGPoint) {
+    func touchMoved(toPoint pos: CGPoint) {
         if movingPlayer == true {
             // clamp position
-            let newPos = CGPoint(x:pos.x,y: player.position.y)
+            let newPos = CGPoint(x: pos.x, y: player.position.y)
             player.position = newPos
             
             // check last position; if empty set it
@@ -150,34 +148,40 @@ class GameScene: SKScene {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {self.touchMoved(toPoint: t.location(in: self))}
+        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {self.touchUp(atPoint: t.location(in: self))}
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {self.touchMoved(toPoint: t.location(in: self))}
+        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
     }
+
     // MARK: - GAME FUNCTIONS
 
     func spawnMultipleGloops() {
+        player.walk()
+        if !gameInProgress {
+            score = 0
+            level = 1
+        }
         // set number of drops based on the level
         switch level {
         case 1 ... 5: numberOfDrops = level * 10
-        case 6:       numberOfDrops = 75
-        case 7:       numberOfDrops = 100
-        case 8:       numberOfDrops = 150
-        default:      numberOfDrops = 150
+        case 6: numberOfDrops = 75
+        case 7: numberOfDrops = 100
+        case 8: numberOfDrops = 150
+        default: numberOfDrops = 150
         }
         
         // set up drop spped
         dropSpeed = 1.0 / (CGFloat(level) + CGFloat(level) / CGFloat(numberOfDrops))
         if dropSpeed < minDropSpeed {
-          dropSpeed = minDropSpeed
+            dropSpeed = minDropSpeed
         } else if dropSpeed > maxDropSpeed {
-          dropSpeed = maxDropSpeed
+            dropSpeed = maxDropSpeed
         }
         
         // set up repeating action
@@ -197,7 +201,7 @@ class GameScene: SKScene {
         // set random position
         let margin = collectible.size.width * 2
         let dropRange = SKRange(lowerLimit: frame.minX + margin,
-                                upperLimit: frame.maxX - margin)
+                                upperLimit: frame.maxX-margin)
         let randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
         
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
@@ -212,9 +216,39 @@ class GameScene: SKScene {
         removeAction(forKey: GloopActionKeys.gloop.rawValue)
         
         enumerateChildNodes(withName: "//co_*") {
-            (node, stop) in
-            node.removeAction(forKey:  GloopActionKeys.drop.rawValue)
+            node, _ in
+            node.removeAction(forKey: GloopActionKeys.drop.rawValue)
             node.physicsBody = nil
+        }
+        
+        resetPlayerPosition()
+        popRemainingDrops()
+    }
+    
+    func resetPlayerPosition() {
+        let resetPoint = CGPoint(x: frame.midX, y: player.position.y)
+        let distance = hypot(resetPoint.x-player.position.x, 0.0)
+        let calculatedSpeed = TimeInterval(distance / (playerSpeed * 2)) / 255
+        
+        player.moveToPosition(pos: resetPoint,
+                              direction: player.position.x > frame.midX ? .left : .right,
+                              speed: calculatedSpeed)
+    }
+    
+    func popRemainingDrops() {
+        var i = 0
+        enumerateChildNodes(withName: "//co_*") {
+            node, _ in
+            
+            let initialWait = SKAction.wait(forDuration: 1.0)
+            let wait = SKAction.wait(forDuration: TimeInterval(0.15 * CGFloat(i)))
+            
+            let removeFromParent = SKAction.removeFromParent()
+            let actionSequence = SKAction.sequence([initialWait, wait, removeFromParent])
+
+            node.run(actionSequence)
+            
+            i += 1
         }
     }
 }
@@ -230,8 +264,8 @@ extension GameScene: SKPhysicsContactDelegate {
         if collision == PhysicsCategory.player | PhysicsCategory.collectible {
             print("player hit collectible")
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
-            contact.bodyA.node :
-            contact.bodyB.node
+                contact.bodyA.node :
+                contact.bodyB.node
             
             if let sprite = body as? Collectible {
                 sprite.collected()
@@ -242,13 +276,12 @@ extension GameScene: SKPhysicsContactDelegate {
         if collision == PhysicsCategory.foreground | PhysicsCategory.collectible {
             print("collectible hit foreground")
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
-            contact.bodyA.node :
-            contact.bodyB.node
+                contact.bodyA.node :
+                contact.bodyB.node
             if let sprite = body as? Collectible {
                 sprite.missed()
                 gameOver()
             }
         }
     }
-
 }
