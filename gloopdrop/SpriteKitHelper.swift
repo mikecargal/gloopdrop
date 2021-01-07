@@ -25,6 +25,12 @@ enum Layer: CGFloat {
     case ui
 }
 
+enum GloopActionKeys: String {
+    case gloop
+    case drop
+}
+
+
 // MARK: - SPRITEKIT EXTENSIONS
 
 extension SKSpriteNode {

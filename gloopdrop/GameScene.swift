@@ -86,31 +86,30 @@ class GameScene: SKScene {
     
     func setupLabels() {
         // SCORE LABEL
-        scoreLabel.name = "score"
-        scoreLabel.fontName = "Nosifer"
-        scoreLabel.fontColor = .yellow
-        scoreLabel.fontSize = 35.0
+        commonLabelInit(label: scoreLabel)
         scoreLabel.horizontalAlignmentMode = .right
-        scoreLabel.verticalAlignmentMode = .center
-        scoreLabel.zPosition = Layer.ui.rawValue
         scoreLabel.position = CGPoint(x: frame.maxX-50, y: viewTop()-100)
         
         scoreLabel.text = "Score: 0"
         addChild(scoreLabel)
         
         // LEVEL LABEL
-        levelLabel.name = "level"
-        levelLabel.fontName = "Nosifer"
-        levelLabel.fontColor = .yellow
-        levelLabel.fontSize = 35.0
+        commonLabelInit(label:  levelLabel)
         levelLabel.horizontalAlignmentMode = .left
-        levelLabel.verticalAlignmentMode = .center
-        levelLabel.zPosition = Layer.ui.rawValue
         levelLabel.position = CGPoint(x: frame.minX+50, y: viewTop()-100)
         
         levelLabel.text = "Level: \(level)"
         
         addChild(levelLabel)
+    }
+    
+    func commonLabelInit(label:SKLabelNode)  {
+        label.name = "score"
+        label.fontName = "Nosifer"
+        label.fontColor = .yellow
+        label.fontSize = 35.0
+        label.verticalAlignmentMode = .center
+        label.zPosition = Layer.ui.rawValue
     }
     
     // MARK: - TOUCH HANDLING
@@ -187,7 +186,7 @@ class GameScene: SKScene {
         let repeatAction = SKAction.repeat(sequence, count: numberOfDrops)
         
         // run action
-        run(repeatAction, withKey: "gloop")
+        run(repeatAction, withKey: GloopActionKeys.gloop.rawValue)
         gameInProgress = true
     }
     
@@ -196,7 +195,8 @@ class GameScene: SKScene {
         
         // set random position
         let margin = collectible.size.width * 2
-        let dropRange = SKRange(lowerLimit: frame.minX + margin, upperLimit: frame.maxX-margin)
+        let dropRange = SKRange(lowerLimit: frame.minX + margin,
+                                upperLimit: frame.maxX - margin)
         let randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
         
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
@@ -208,11 +208,11 @@ class GameScene: SKScene {
     func gameOver() {
         gameInProgress = false
         player.die()
-        removeAction(forKey: "gloop")
+        removeAction(forKey: GloopActionKeys.gloop.rawValue)
         
         enumerateChildNodes(withName: "//co_*") {
             (node, stop) in
-            node.removeAction(forKey: "drop")
+            node.removeAction(forKey:  GloopActionKeys.drop.rawValue)
             node.physicsBody = nil
         }
     }

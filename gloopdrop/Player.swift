@@ -19,20 +19,29 @@ enum PlayerMovementDirection: String {
     case right
 }
 
+enum GloopBlobPrefixes : String {
+    case blobWalk = "blob-walk_"
+    case blobDie = "blob-die_"
+}
+
 class Player: SKSpriteNode {
     // MARK: - PROPERTIES
+
     // Textures (Animation)
     private var walkTextures: [SKTexture]?
     private var dieTextures: [SKTexture]?
     
     // MARK: - INIT
+
     init() {
-        let texture = SKTexture(imageNamed: "blob-walk_0")
+        let texture = SKTexture(imageNamed: "\(GloopBlobPrefixes.blobWalk.rawValue)0")
         super.init(texture: texture, color: .clear, size: texture.size())
         
-        self.walkTextures = self.loadTexttures(atlas: "blob", prefix: "blob-walk_",
+        self.walkTextures = self.loadTexttures(atlas: "blob",
+                                               prefix: GloopBlobPrefixes.blobWalk.rawValue,
                                                startsAt: 0, stopsAt: 2)
-        self.dieTextures = self.loadTexttures(atlas: "blob", prefix: "blob-die_",
+        self.dieTextures = self.loadTexttures(atlas: "blob",
+                                              prefix: GloopBlobPrefixes.blobDie.rawValue,
                                               startsAt: 0, stopsAt: 0)
         
         self.name = "player"
@@ -41,7 +50,7 @@ class Player: SKSpriteNode {
         self.zPosition = Layer.player.rawValue
         
         // add physics body
-        self.physicsBody = SKPhysicsBody(rectangleOf: self.size, center: CGPoint(x: 0.0, y: self.size.height/2))
+        self.physicsBody = SKPhysicsBody(rectangleOf: self.size, center: CGPoint(x: 0.0, y: self.size.height / 2))
         self.physicsBody?.affectedByGravity = false
         
         self.physicsBody?.categoryBitMask = PhysicsCategory.player
@@ -49,12 +58,14 @@ class Player: SKSpriteNode {
         self.physicsBody?.collisionBitMask = PhysicsCategory.none
     }
     
-    required init?(coder aDecoder:NSCoder) {
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - METHODS
-    func setupConstraints(floor:CGFloat) {
+
+    func setupConstraints(floor: CGFloat) {
         let range = SKRange(lowerLimit: floor, upperLimit: floor)
         let lockToPlatform = SKConstraint.positionY(range)
         
@@ -63,7 +74,7 @@ class Player: SKSpriteNode {
     
     func walk() {
         guard let walkTextures = walkTextures else {
-            preconditionFailure("Could not find textures!")
+            preconditionFailure("Could not find walk textures!")
         }
         removeAction(forKey: PlayerAnimationType.die.rawValue)
         startAnimation(textures: walkTextures, speed: 0.25,
@@ -85,7 +96,7 @@ class Player: SKSpriteNode {
                        count: 0, resize: true, restore: true)
     }
     
-    func moveToPosition(pos:CGPoint,direction: PlayerMovementDirection,speed:TimeInterval) {
+    func moveToPosition(pos: CGPoint, direction: PlayerMovementDirection, speed: TimeInterval) {
         switch direction {
         case .left:
             xScale = -abs(xScale)

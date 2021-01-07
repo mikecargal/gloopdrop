@@ -62,7 +62,7 @@ class Collectible:SKSpriteNode {
         
         //Shrink first, then run fall action
         self.scale(to: CGSize(width: 0.25, height: 1.0))
-        self.run(actionSequence,withKey: "drop")
+        self.run(actionSequence,withKey: GloopActionKeys.drop.rawValue)
     }
     
     func collected() {
