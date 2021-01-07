@@ -78,10 +78,7 @@ class GameScene: SKScene {
         player.walk()
         // set up game
       //  spawnMultipleGloops()
-        if gameInProgress == false {
-            spawnMultipleGloops()
-            return
-        }
+
     }
     
     func setupLabels() {
@@ -115,6 +112,10 @@ class GameScene: SKScene {
     // MARK: - TOUCH HANDLING
     
     func touchDown(atPoint pos: CGPoint) {
+        if gameInProgress == false {
+            spawnMultipleGloops()
+            return
+        }
         let touchedNode = atPoint(pos)
         if touchedNode.name == "player" {
             movingPlayer = true

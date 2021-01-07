@@ -88,7 +88,7 @@ class Player: SKSpriteNode {
             preconditionFailure("Could not find die textures!")
         }
         print("removeAction(forKey: \(PlayerAnimationType.walk.rawValue))")
-        removeAction(forKey: PlayerAnimationType.walk.rawValue)
+        removeAction(forKey: "PlayerAnimationType.walk.rawValue")
         print("dieTextures=>>\(dieTextures)<<")
         print("startAnimation(name:\(PlayerAnimationType.die.rawValue))")
         startAnimation(textures: dieTextures, speed: 0.25,
