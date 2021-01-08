@@ -83,27 +83,36 @@ class GameScene: SKScene {
     
     func setupLabels() {
         // SCORE LABEL
-        commonLabelInit(label: scoreLabel)
-        scoreLabel.horizontalAlignmentMode = .right
-        scoreLabel.position = CGPoint(x: frame.maxX-50, y: viewTop()-100)
-        
-        scoreLabel.text = "Score: 0"
+        commonLabelInit(label: scoreLabel,
+                        hAlign: .right,
+                        xPos: frame.maxX - 50,
+                        text: "Score: 0")
         addChild(scoreLabel)
         
         // LEVEL LABEL
-        commonLabelInit(label: levelLabel)
-        levelLabel.horizontalAlignmentMode = .left
-        levelLabel.position = CGPoint(x: frame.minX + 50, y: viewTop()-100)
-        
-        levelLabel.text = "Level: \(level)"
-        
+        commonLabelInit(label: levelLabel,
+                        hAlign: .left,
+                        xPos: frame.minX + 50,
+                        text: "Level: \(level)")
         addChild(levelLabel)
+    }
+    
+    func commonLabelInit(label: SKLabelNode, hAlign: SKLabelHorizontalAlignmentMode, xPos: CGFloat, text: String) {
+        label.name = "score"
+        label.fontName = labelFont
+        label.fontColor = .yellow
+        label.fontSize = 35.0
+        label.horizontalAlignmentMode = hAlign
+        label.verticalAlignmentMode = .center
+        label.zPosition = Layer.ui.rawValue
+        label.position = CGPoint(x: xPos, y: viewTop() - 100)
+        label.text = text
     }
     
     func showMessage(_ message: String) {
         let messageLabel = SKLabelNode()
         messageLabel.name = "message"
-        messageLabel.position = CGPoint(x: frame.midX, y: player.frame.maxY+100)
+        messageLabel.position = CGPoint(x: frame.midX, y: player.frame.maxY + 100)
         messageLabel.zPosition = Layer.ui.rawValue
         
         messageLabel.numberOfLines = 2
@@ -111,17 +120,18 @@ class GameScene: SKScene {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
         
-        let attributes: [NSAttributedString.Key:Any] = [
-            .foregroundColor: SKColor(red: 251.0/255.0,
-                                      green: 155.0/255/0,
-                                      blue: 24.0/255.0,
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: SKColor(red: 251.0 / 255.0,
+                                      green: 155.0 / 255 / 0,
+                                      blue: 24.0 / 255.0,
                                       alpha: 1.0),
             .backgroundColor: UIColor.clear,
             .font: UIFont(name: labelFont, size: 45.0)!,
             .paragraphStyle: paragraph
         ]
         
-        messageLabel.attributedText = NSAttributedString(string: message,attributes: attributes)
+        messageLabel.attributedText = NSAttributedString(string: message,
+                                                         attributes: attributes)
         
         // run a fade action and add the labelto the scene
         messageLabel.run(SKAction.fadeIn(withDuration: 0.25))
@@ -130,29 +140,21 @@ class GameScene: SKScene {
     
     func hideMessage() {
         if let messageLabel = childNode(withName: "//message") as? SKLabelNode {
-            messageLabel.run((SKAction.sequence([
-                                                    SKAction.fadeOut(withDuration: 0.25),
-                                                    SKAction.removeFromParent()
-            ])))
+            messageLabel.run(SKAction.sequence([
+                SKAction.fadeOut(withDuration: 0.25),
+                SKAction.removeFromParent()
+            ]))
         }
     }
-    
-    func commonLabelInit(label: SKLabelNode) {
-        label.name = "score"
-        label.fontName = labelFont
-        label.fontColor = .yellow
-        label.fontSize = 35.0
-        label.verticalAlignmentMode = .center
-        label.zPosition = Layer.ui.rawValue
-    }
-    
+
     // MARK: - TOUCH HANDLING
     
     func touchDown(atPoint pos: CGPoint) {
-        if gameInProgress == false {
+        if !gameInProgress {
             spawnMultipleGloops()
             return
         }
+        
         let touchedNode = atPoint(pos)
         if touchedNode.name == "player" {
             movingPlayer = true
@@ -167,11 +169,7 @@ class GameScene: SKScene {
             
             // check last position; if empty set it
             let recordedPosition = lastPosition ?? player.position
-            if recordedPosition.x > newPos.x {
-                player.xScale = -abs(xScale)
-            } else {
-                player.xScale = abs(xScale)
-            }
+            player.xScale = recordedPosition.x > newPos.x ? -abs(xScale) : abs(xScale)
             
             // save last known position
             lastPosition = newPos
@@ -183,7 +181,7 @@ class GameScene: SKScene {
     }
      
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { touchDown(atPoint: t.location(in: self)) }
+        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -195,17 +193,21 @@ class GameScene: SKScene {
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
 
     // MARK: - GAME FUNCTIONS
 
     func spawnMultipleGloops() {
+        hideMessage()
+
         player.walk()
+
         if !gameInProgress {
             score = 0
             level = 1
         }
+        
         // set number of drops based on the level
         switch level {
         case 1 ... 5: numberOfDrops = level * 10
@@ -218,24 +220,21 @@ class GameScene: SKScene {
         dropsCollected = 0
         dropsExpected = numberOfDrops
         
-        // set up drop spped
+        // set up drop speed
         dropSpeed = 1.0 / (CGFloat(level) + CGFloat(level) / CGFloat(numberOfDrops))
-        if dropSpeed < minDropSpeed {
-            dropSpeed = minDropSpeed
-        } else if dropSpeed > maxDropSpeed {
-            dropSpeed = maxDropSpeed
-        }
+        dropSpeed = max(dropSpeed, minDropSpeed)
+        dropSpeed = min(dropSpeed, maxDropSpeed)
         
         // set up repeating action
-        let wait = SKAction.wait(forDuration: TimeInterval(dropSpeed))
-        let spawn = SKAction.run { [unowned self] in self.spawnGloop() }
-        let sequence = SKAction.sequence([wait, spawn])
+        let sequence = SKAction.sequence([
+            SKAction.wait(forDuration: TimeInterval(dropSpeed)),
+            SKAction.run { [unowned self] in self.spawnGloop() }
+        ])
         let repeatAction = SKAction.repeat(sequence, count: numberOfDrops)
         
         // run action
         run(repeatAction, withKey: GloopActionKeys.gloop.rawValue)
         gameInProgress = true
-        hideMessage()
     }
     
     func spawnGloop() {
@@ -244,7 +243,7 @@ class GameScene: SKScene {
         // set random position
         let margin = collectible.size.width * 2
         let dropRange = SKRange(lowerLimit: frame.minX + margin,
-                                upperLimit: frame.maxX-margin)
+                                upperLimit: frame.maxX - margin)
         let randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
         
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
@@ -259,20 +258,25 @@ class GameScene: SKScene {
     }
     
     func nextLevel() {
-        let wait = SKAction.wait(forDuration: 2.25)
-        run(wait, completion: {
-            [unowned self] in self.level += 1
-            self.spawnMultipleGloops()
-        })
         showMessage("Get Ready!")
+
+        run(SKAction.wait(forDuration: 2.25),
+            completion: {
+                [unowned self] in self.level += 1
+                self.spawnMultipleGloops()
+            })
     }
     
     // Player FAILED level
     func gameOver() {
+        showMessage("Game Over\nTap to try again")
+
         gameInProgress = false
         player.die()
+
+        print("removeAction(forKey: \(GloopActionKeys.gloop.rawValue))")
         removeAction(forKey: GloopActionKeys.gloop.rawValue)
-        
+
         enumerateChildNodes(withName: "//co_*") {
             node, _ in
             node.removeAction(forKey: GloopActionKeys.drop.rawValue)
@@ -281,17 +285,15 @@ class GameScene: SKScene {
         
         resetPlayerPosition()
         popRemainingDrops()
-        showMessage("Game Over\nTap to try again")
     }
     
     func resetPlayerPosition() {
         let resetPoint = CGPoint(x: frame.midX, y: player.position.y)
-        let distance = hypot(resetPoint.x-player.position.x, 0.0)
-        let calculatedSpeed = TimeInterval(distance / (playerSpeed * 2)) / 255
+        let distance = hypot(resetPoint.x - player.position.x, 0.0)
         
         player.moveToPosition(pos: resetPoint,
                               direction: player.position.x > frame.midX ? .left : .right,
-                              speed: calculatedSpeed)
+                              speed: TimeInterval(distance / (playerSpeed * 2)) / 255)
     }
     
     func popRemainingDrops() {
@@ -322,6 +324,7 @@ extension GameScene: SKPhysicsContactDelegate {
         // did the [PLAYER] collide with the [COLLECTIBLE]?
         if collision == PhysicsCategory.player | PhysicsCategory.collectible {
             print("player hit collectible")
+            
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
                 contact.bodyA.node :
                 contact.bodyB.node
@@ -336,6 +339,7 @@ extension GameScene: SKPhysicsContactDelegate {
         
         if collision == PhysicsCategory.foreground | PhysicsCategory.collectible {
             print("collectible hit foreground")
+            
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
                 contact.bodyA.node :
                 contact.bodyB.node

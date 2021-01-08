@@ -19,7 +19,7 @@ enum PlayerMovementDirection: String {
     case right
 }
 
-enum GloopBlobPrefixes : String {
+enum GloopBlobPrefixes: String {
     case blobWalk = "blob-walk_"
     case blobDie = "blob-die_"
 }
@@ -35,6 +35,7 @@ class Player: SKSpriteNode {
 
     init() {
         let texture = SKTexture(imageNamed: "\(GloopBlobPrefixes.blobWalk.rawValue)0")
+        
         super.init(texture: texture, color: .clear, size: texture.size())
         
         self.walkTextures = self.loadTexttures(atlas: "blob",
@@ -50,7 +51,9 @@ class Player: SKSpriteNode {
         self.zPosition = Layer.player.rawValue
         
         // add physics body
-        self.physicsBody = SKPhysicsBody(rectangleOf: self.size, center: CGPoint(x: 0.0, y: self.size.height / 2))
+        self.physicsBody = SKPhysicsBody(rectangleOf: self.size,
+                                         center: CGPoint(x: 0.0,
+                                                         y: self.size.height / 2))
         self.physicsBody?.affectedByGravity = false
         
         self.physicsBody?.categoryBitMask = PhysicsCategory.player
@@ -58,7 +61,6 @@ class Player: SKSpriteNode {
         self.physicsBody?.collisionBitMask = PhysicsCategory.none
     }
     
-    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -76,7 +78,9 @@ class Player: SKSpriteNode {
         guard let walkTextures = walkTextures else {
             preconditionFailure("Could not find walk textures!")
         }
+        
         removeAction(forKey: PlayerAnimationType.die.rawValue)
+        
         startAnimation(textures: walkTextures, speed: 0.25,
                        name: PlayerAnimationType.walk.rawValue,
                        count: 0, resize: true, restore: true)
@@ -84,13 +88,18 @@ class Player: SKSpriteNode {
     
     func die() {
         print("Player::die()")
+        
         guard let dieTextures = dieTextures else {
             preconditionFailure("Could not find die textures!")
         }
+        
         print("removeAction(forKey: \(PlayerAnimationType.walk.rawValue))")
-        removeAction(forKey: "PlayerAnimationType.walk.rawValue")
+        
+        removeAction(forKey: PlayerAnimationType.walk.rawValue)
+        
         print("dieTextures=>>\(dieTextures)<<")
         print("startAnimation(name:\(PlayerAnimationType.die.rawValue))")
+        
         startAnimation(textures: dieTextures, speed: 0.25,
                        name: PlayerAnimationType.die.rawValue,
                        count: 0, resize: true, restore: true)
@@ -103,7 +112,7 @@ class Player: SKSpriteNode {
         case .right:
             xScale = abs(xScale)
         }
-        let moveAction = SKAction.move(to: pos, duration: speed)
-        run(moveAction)
+
+        run(SKAction.move(to: pos, duration: speed))
     }
 }
