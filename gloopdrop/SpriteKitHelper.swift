@@ -30,12 +30,12 @@ enum GloopActionKeys: String {
     case drop
 }
 
-
 // MARK: - SPRITEKIT EXTENSIONS
 
 extension SKSpriteNode {
     func loadTextures(atlas: String, prefix: String,
-                       startsAt: Int, stopsAt: Int) -> [SKTexture] {
+                      startsAt: Int, stopsAt: Int) -> [SKTexture]
+    {
         var textureArray = [SKTexture]()
         let texttureAtlas = SKTextureAtlas(named: atlas)
         for i in startsAt ... stopsAt {
@@ -48,20 +48,22 @@ extension SKSpriteNode {
 
     // Start the animation using a name and a count (0 = repeat forever)
     func startAnimation(textures: [SKTexture], speed: Double, name: String,
-                        count: Int, resize: Bool, restore: Bool) {
-        
-        let animation = SKAction.animate(withNormalTextures: textures, timePerFrame: speed,
-                                         resize: resize, restore: restore)
+                        count: Int, resize: Bool, restore: Bool)
+    {
+        if action(forKey: name) == nil {
+            let animation = SKAction.animate(with: textures, timePerFrame: speed,
+                                             resize: resize, restore: restore)
 
-        if count == 0 {
-            // run animation until stopped
-            let repeatAction = SKAction.repeatForever(animation)
-            run(repeatAction, withKey: name)
-        } else if count == 1 {
-            run(animation, withKey: name)
-        } else {
-            let repeatAction = SKAction.repeat(animation, count: count)
-            run(repeatAction, withKey: name)
+            if count == 0 {
+                // run animation until stopped
+                let repeatAction = SKAction.repeatForever(animation)
+                run(repeatAction, withKey: name)
+            } else if count == 1 {
+                run(animation, withKey: name)
+            } else {
+                let repeatAction = SKAction.repeat(animation, count: count)
+                run(repeatAction, withKey: name)
+            }
         }
     }
 }
@@ -70,9 +72,9 @@ extension SKScene {
     func viewTop() -> CGFloat {
         return convertPoint(fromView: CGPoint(x: 0.0, y: 0.0)).y
     }
-    
+
     func viewBottom() -> CGFloat {
-        guard let view = view else {return 0.0}
+        guard let view = view else { return 0.0 }
         return convertPoint(fromView: CGPoint(x: 0.0, y: view.bounds.size.height)).y
     }
 }
