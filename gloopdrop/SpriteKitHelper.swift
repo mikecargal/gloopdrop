@@ -34,7 +34,7 @@ enum GloopActionKeys: String {
 // MARK: - SPRITEKIT EXTENSIONS
 
 extension SKSpriteNode {
-    func loadTexttures(atlas: String, prefix: String,
+    func loadTextures(atlas: String, prefix: String,
                        startsAt: Int, stopsAt: Int) -> [SKTexture] {
         var textureArray = [SKTexture]()
         let texttureAtlas = SKTextureAtlas(named: atlas)

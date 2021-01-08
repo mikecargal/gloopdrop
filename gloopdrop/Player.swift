@@ -38,10 +38,10 @@ class Player: SKSpriteNode {
         
         super.init(texture: texture, color: .clear, size: texture.size())
         
-        self.walkTextures = self.loadTexttures(atlas: "blob",
+        self.walkTextures = self.loadTextures(atlas: "blob",
                                                prefix: GloopBlobPrefixes.blobWalk.rawValue,
                                                startsAt: 0, stopsAt: 2)
-        self.dieTextures = self.loadTexttures(atlas: "blob",
+        self.dieTextures = self.loadTextures(atlas: "blob",
                                               prefix: GloopBlobPrefixes.blobDie.rawValue,
                                               startsAt: 0, stopsAt: 0)
         
