@@ -12,6 +12,8 @@ class GameScene: SKScene {
     let player = Player()
     let playerSpeed: CGFloat = 1.5
     
+    let labelFont = "Nosifer"
+    
     // player movement
     var movingPlayer = false
     var lastPosition: CGPoint?
@@ -75,10 +77,8 @@ class GameScene: SKScene {
         player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
         addChild(player)
-        
-        // player.walk()
-        // set up game
-        // spawnMultipleGloops()
+
+        showMessage("Tap to start game")
     }
     
     func setupLabels() {
@@ -100,9 +100,46 @@ class GameScene: SKScene {
         addChild(levelLabel)
     }
     
+    func showMessage(_ message: String) {
+        let messageLabel = SKLabelNode()
+        messageLabel.name = "message"
+        messageLabel.position = CGPoint(x: frame.midX, y: player.frame.maxY+100)
+        messageLabel.zPosition = Layer.ui.rawValue
+        
+        messageLabel.numberOfLines = 2
+        
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+        
+        let attributes: [NSAttributedString.Key:Any] = [
+            .foregroundColor: SKColor(red: 251.0/255.0,
+                                      green: 155.0/255/0,
+                                      blue: 24.0/255.0,
+                                      alpha: 1.0),
+            .backgroundColor: UIColor.clear,
+            .font: UIFont(name: labelFont, size: 45.0)!,
+            .paragraphStyle: paragraph
+        ]
+        
+        messageLabel.attributedText = NSAttributedString(string: message,attributes: attributes)
+        
+        // run a fade action and add the labelto the scene
+        messageLabel.run(SKAction.fadeIn(withDuration: 0.25))
+        addChild(messageLabel)
+    }
+    
+    func hideMessage() {
+        if let messageLabel = childNode(withName: "//message") as? SKLabelNode {
+            messageLabel.run((SKAction.sequence([
+                                                    SKAction.fadeOut(withDuration: 0.25),
+                                                    SKAction.removeFromParent()
+            ])))
+        }
+    }
+    
     func commonLabelInit(label: SKLabelNode) {
         label.name = "score"
-        label.fontName = "Nosifer"
+        label.fontName = labelFont
         label.fontColor = .yellow
         label.fontSize = 35.0
         label.verticalAlignmentMode = .center
@@ -198,6 +235,7 @@ class GameScene: SKScene {
         // run action
         run(repeatAction, withKey: GloopActionKeys.gloop.rawValue)
         gameInProgress = true
+        hideMessage()
     }
     
     func spawnGloop() {
@@ -226,6 +264,7 @@ class GameScene: SKScene {
             [unowned self] in self.level += 1
             self.spawnMultipleGloops()
         })
+        showMessage("Get Ready!")
     }
     
     // Player FAILED level
@@ -242,6 +281,7 @@ class GameScene: SKScene {
         
         resetPlayerPosition()
         popRemainingDrops()
+        showMessage("Game Over\nTap to try again")
     }
     
     func resetPlayerPosition() {
