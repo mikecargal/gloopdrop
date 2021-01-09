@@ -87,19 +87,10 @@ class Player: SKSpriteNode {
     }
     
     func die() {
-        print("Player::die()")
-        
         guard let dieTextures = dieTextures else {
             preconditionFailure("Could not find die textures!")
         }
-        
-        print("removeAction(forKey: \(PlayerAnimationType.walk.rawValue))")
-        
         removeAction(forKey: PlayerAnimationType.walk.rawValue)
-        
-        print("dieTextures=>>\(dieTextures)<<")
-        print("startAnimation(name:\(PlayerAnimationType.die.rawValue))")
-        
         startAnimation(textures: dieTextures, speed: 0.25,
                        name: PlayerAnimationType.die.rawValue,
                        count: 0, resize: true, restore: true)

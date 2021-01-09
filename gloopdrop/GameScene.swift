@@ -122,7 +122,7 @@ class GameScene: SKScene {
         
         let attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: SKColor(red: 251.0 / 255.0,
-                                      green: 155.0 / 255 / 0,
+                                      green: 155.0 / 255 ,
                                       blue: 24.0 / 255.0,
                                       alpha: 1.0),
             .backgroundColor: UIColor.clear,
@@ -274,7 +274,6 @@ class GameScene: SKScene {
         gameInProgress = false
         player.die()
 
-        print("removeAction(forKey: \(GloopActionKeys.gloop.rawValue))")
         removeAction(forKey: GloopActionKeys.gloop.rawValue)
 
         enumerateChildNodes(withName: "//co_*") {
@@ -323,8 +322,6 @@ extension GameScene: SKPhysicsContactDelegate {
         
         // did the [PLAYER] collide with the [COLLECTIBLE]?
         if collision == PhysicsCategory.player | PhysicsCategory.collectible {
-            print("player hit collectible")
-            
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
                 contact.bodyA.node :
                 contact.bodyB.node
@@ -338,8 +335,6 @@ extension GameScene: SKPhysicsContactDelegate {
         }
         
         if collision == PhysicsCategory.foreground | PhysicsCategory.collectible {
-            print("collectible hit foreground")
-            
             let body = contact.bodyA.categoryBitMask == PhysicsCategory.collectible ?
                 contact.bodyA.node :
                 contact.bodyB.node
