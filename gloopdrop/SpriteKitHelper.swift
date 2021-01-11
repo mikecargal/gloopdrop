@@ -19,6 +19,7 @@ enum PhysicsCategory {
 
 enum Layer: CGFloat {
     case background
+    case banner
     case foreground
     case player
     case collectible

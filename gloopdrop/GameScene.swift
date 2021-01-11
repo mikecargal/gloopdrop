@@ -64,7 +64,7 @@ class GameScene: SKScene {
         musicAudioNode.run(SKAction.changeVolume(to: 0.0, duration: 0.0))
         run(SKAction.wait(forDuration: 1.0), completion: { [unowned self] in
             self.audioEngine.mainMixerNode.outputVolume = 1.0
-            self.musicAudioNode.run(SKAction.changeVolume(to: 0.5, duration: 2.0))
+            self.musicAudioNode.run(SKAction.changeVolume(to: 0.75, duration: 2.0))
         })
         
         // run a delayed action to add bubble audio to the scene
@@ -99,6 +99,13 @@ class GameScene: SKScene {
         
         addChild(foreground)
 
+        // set up the banner
+        let banner = SKSpriteNode(imageNamed: "banner")
+        banner.zPosition = Layer.banner.rawValue + 1
+        banner.position = CGPoint(x: frame.midX, y: viewTop()-20)
+        banner.anchorPoint = CGPoint(x: 0.5, y: 1.0)
+        addChild(banner)
+        
         setupLabels()
 
         // Set up a plyer
@@ -187,7 +194,6 @@ class GameScene: SKScene {
         
         let touchedNodes = nodes(at: pos)
         for touchedNode in touchedNodes {
-            print("touchedNode: \(String(describing: touchedNode.name))")
             if touchedNode.name == "player" {
                 movingPlayer = true
             }
@@ -234,6 +240,7 @@ class GameScene: SKScene {
     func spawnMultipleGloops() {
         hideMessage()
 
+        player.mumble()
         player.walk()
 
         if !gameInProgress {

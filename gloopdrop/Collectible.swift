@@ -48,6 +48,13 @@ class Collectible: SKSpriteNode {
         self.physicsBody?.categoryBitMask = PhysicsCategory.collectible
         self.physicsBody?.contactTestBitMask = PhysicsCategory.player | PhysicsCategory.foreground
         self.physicsBody?.collisionBitMask = PhysicsCategory.none
+        
+        // add glow effect
+        let effectNode = SKEffectNode()
+        effectNode.shouldRasterize = true
+        addChild(effectNode)
+        effectNode.addChild(SKSpriteNode(texture: texture))
+        effectNode.filter = CIFilter(name: "CIGaussianBlur",parameters: ["inputRadius":40.0])
     }
     
     @available(*, unavailable)

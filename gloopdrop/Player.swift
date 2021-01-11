@@ -106,4 +106,9 @@ class Player: SKSpriteNode {
 
         run(SKAction.move(to: pos, duration: speed))
     }
+    
+    func mumble() {
+        let random = Int.random(in: 1...3)
+        self.run(SKAction.playSoundFileNamed("blob_mumble-\(random)", waitForCompletion: true),withKey: "mumble")
+    }
 }
