@@ -21,6 +21,7 @@
 		279FF15225ACB581009DEA73 /* blob_mumble-2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 279FF14C25ACB581009DEA73 /* blob_mumble-2.wav */; };
 		279FF15325ACB581009DEA73 /* blob_mumble-3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 279FF14D25ACB581009DEA73 /* blob_mumble-3.wav */; };
 		279FF15425ACB581009DEA73 /* blob_mumble-1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 279FF14E25ACB581009DEA73 /* blob_mumble-1.wav */; };
+		279FF15925ACB75E009DEA73 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 279FF15825ACB75E009DEA73 /* music.mp3 */; };
 		27AAC30125A4E55B00428EA2 /* Nosifer-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 		279FF14C25ACB581009DEA73 /* blob_mumble-2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "blob_mumble-2.wav"; sourceTree = "<group>"; };
 		279FF14D25ACB581009DEA73 /* blob_mumble-3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "blob_mumble-3.wav"; sourceTree = "<group>"; };
 		279FF14E25ACB581009DEA73 /* blob_mumble-1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "blob_mumble-1.wav"; sourceTree = "<group>"; };
+		279FF15825ACB75E009DEA73 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 		27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nosifer-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,6 +84,7 @@
 				27220A6C25A218590023FFE7 /* Main.storyboard */,
 				27220A6F25A218590023FFE7 /* Assets.xcassets */,
 				279FF14825ACB581009DEA73 /* Sounds */,
+				279FF15725ACB75E009DEA73 /* Music */,
 				2795868B25A266290009E4FB /* Player.swift */,
 				2795868E25A266DA0009E4FB /* SpriteKitHelper.swift */,
 				27220A7125A218590023FFE7 /* Info.plist */,
@@ -100,6 +103,14 @@
 				279FF14E25ACB581009DEA73 /* blob_mumble-1.wav */,
 			);
 			path = Sounds;
+			sourceTree = "<group>";
+		};
+		279FF15725ACB75E009DEA73 /* Music */ = {
+			isa = PBXGroup;
+			children = (
+				279FF15825ACB75E009DEA73 /* music.mp3 */,
+			);
+			path = Music;
 			sourceTree = "<group>";
 		};
 		27AAC2FF25A4E4EA00428EA2 /* Fonts */ = {
@@ -167,6 +178,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				279FF15925ACB75E009DEA73 /* music.mp3 in Resources */,
 				279FF15225ACB581009DEA73 /* blob_mumble-2.wav in Resources */,
 				279FF15425ACB581009DEA73 /* blob_mumble-1.wav in Resources */,
 				279FF15125ACB581009DEA73 /* miss.wav in Resources */,

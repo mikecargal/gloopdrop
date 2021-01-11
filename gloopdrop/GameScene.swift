@@ -5,6 +5,7 @@
 //  Created by Mike Cargal on 1/3/21.
 //
 
+import AVFoundation
 import GameplayKit
 import SpriteKit
 
@@ -44,10 +45,25 @@ class GameScene: SKScene {
     // Labels
     var scoreLabel = SKLabelNode()
     var levelLabel = SKLabelNode()
+    
+    // Audio Nodes
+    let musicAudioNode = SKAudioNode(fileNamed: "music.mp3")
 
     override func didMove(to view: SKView) {
         // set up the physics world contact delegate
         physicsWorld.contactDelegate = self
+        
+        // set up the background music audio node
+        musicAudioNode.autoplayLooped = true
+        musicAudioNode.isPositional = false
+        // decrease the audio engine's volume
+        audioEngine.mainMixerNode.outputVolume = 0.0
+        addChild(musicAudioNode)
+        musicAudioNode.run(SKAction.changeVolume(to: 0.0, duration: 0.0))
+        run(SKAction.wait(forDuration: 1.0), completion: { [unowned self] in
+            self.audioEngine.mainMixerNode.outputVolume = 1.0
+            self.musicAudioNode.run(SKAction.changeVolume(to: 0.5, duration: 2.0))
+        })
         
         let background = SKSpriteNode(imageNamed: "background_1")
         background.anchorPoint = CGPoint(x: 0, y: 0)
@@ -122,7 +138,7 @@ class GameScene: SKScene {
         
         let attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: SKColor(red: 251.0 / 255.0,
-                                      green: 155.0 / 255 ,
+                                      green: 155.0 / 255,
                                       blue: 24.0 / 255.0,
                                       alpha: 1.0),
             .backgroundColor: UIColor.clear,
@@ -181,19 +197,19 @@ class GameScene: SKScene {
     }
      
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        for t in touches { touchDown(atPoint: t.location(in: self)) }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        for t in touches { touchMoved(toPoint: t.location(in: self)) }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { touchUp(atPoint: t.location(in: self)) }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { touchUp(atPoint: t.location(in: self)) }
     }
 
     // MARK: - GAME FUNCTIONS
