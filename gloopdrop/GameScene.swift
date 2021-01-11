@@ -18,6 +18,7 @@ class GameScene: SKScene {
     // player movement
     var movingPlayer = false
     var lastPosition: CGPoint?
+    var prevDropLocation: CGFloat = 0.0
     
     var level: Int = 1 {
         didSet {
@@ -275,7 +276,23 @@ class GameScene: SKScene {
         let margin = collectible.size.width * 2
         let dropRange = SKRange(lowerLimit: frame.minX + margin,
                                 upperLimit: frame.maxX - margin)
-        let randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
+        var randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
+        
+        // start enhanced drop movement
+        let randomModifier = SKRange(lowerLimit: 50 + CGFloat(level), upperLimit: 60 * CGFloat(level))
+        let modifier = min(CGFloat.random(in: randomModifier.lowerLimit ... randomModifier.upperLimit), 400)
+        
+        if prevDropLocation == 0.0 { prevDropLocation = randomX }
+        
+        if prevDropLocation < randomX {
+            randomX = prevDropLocation + modifier
+        } else {
+            randomX = prevDropLocation - modifier
+        }
+        
+        randomX = max(frame.minX + margin, min(frame.maxX - margin, randomX))
+        prevDropLocation = randomX
+        // end enhanced drop movement
         
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
         addChild(collectible)
