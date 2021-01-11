@@ -82,6 +82,11 @@ class Collectible: SKSpriteNode {
     }
     
     func missed() {
-        self.run(SKAction.group([self.playMissSound, SKAction.removeFromParent()]))
+        self.run(SKAction.group([
+            self.playMissSound,
+            SKAction.moveBy(x: 0, y: -size.height / 1.5, duration: 0),
+            SKAction.scaleX(to: 1.5, duration: 0.0),
+            SKAction.scaleY(to: 0.5, duration: 0.0)
+        ]))
     }
 }

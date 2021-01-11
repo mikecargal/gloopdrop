@@ -104,7 +104,7 @@ class GameScene: SKScene {
         // Set up a plyer
         player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
-        prevDropLocation = CGFloat.random(in:marginRange())
+        prevDropLocation = CGFloat.random(in: marginRange())
         addChild(player)
         setupGloopFlow()
 
@@ -281,7 +281,7 @@ class GameScene: SKScene {
         let collectible = Collectible(collectibleType: CollectibleType.gloop)
         let margins = marginRange()
 
-        let randomX = CGFloat.random(in:margins)
+        let randomX = CGFloat.random(in: margins)
         
         let distance = min(CGFloat.random(in: 50 + CGFloat(level) ... 60 + CGFloat(level)), 400)
         
@@ -386,6 +386,26 @@ extension GameScene: SKPhysicsContactDelegate {
                 dropsCollected += 1
                 score += level
                 checkForRemainingDrops()
+                
+                // add the 'chomp' text at the player's position
+                let chomp = SKLabelNode(fontNamed: "Nosifer")
+                chomp.name = "chomp"
+                chomp.alpha = 0.0
+                chomp.fontSize = 22.0
+                chomp.text = "gloop"
+                chomp.horizontalAlignmentMode = .center
+                chomp.verticalAlignmentMode = .bottom
+                chomp.position = CGPoint(x: player.position.x, y: player.frame.maxY + 25)
+                chomp.zRotation = CGFloat.random(in: -0.15 ... 0.15)
+                addChild(chomp)
+                
+                // add actions to fade in, rise up, and fade out
+                let fadeIn = SKAction.fadeAlpha(to: 1.0, duration: 0.05)
+                let moveAndFadeOut = SKAction.group([
+                    SKAction.fadeAlpha(to: 0.0, duration: 0.45),
+                    SKAction.moveBy(x: 0.0, y: 45, duration: 0.45)
+                ])
+                chomp.run(SKAction.sequence([fadeIn, moveAndFadeOut, SKAction.removeFromParent()]))
             }
         }
         
