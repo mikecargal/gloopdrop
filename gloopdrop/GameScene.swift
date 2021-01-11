@@ -279,8 +279,8 @@ class GameScene: SKScene {
         var randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
         
         // start enhanced drop movement
-        let randomModifier = SKRange(lowerLimit: 50 + CGFloat(level), upperLimit: 60 * CGFloat(level))
-        let modifier = min(CGFloat.random(in: randomModifier.lowerLimit ... randomModifier.upperLimit), 400)
+        //let randomModifier = SKRange(lowerLimit: 50 + CGFloat(level), upperLimit: 60 * CGFloat(level))
+        let modifier = min(CGFloat.random(in: 50 + CGFloat(level) ... 60 * CGFloat(level)), 400)
         
         if prevDropLocation == 0.0 { prevDropLocation = randomX }
         
@@ -293,6 +293,17 @@ class GameScene: SKScene {
         randomX = max(frame.minX + margin, min(frame.maxX - margin, randomX))
         prevDropLocation = randomX
         // end enhanced drop movement
+        
+        // add the number tag to the collectiondrop
+        let xLabel = SKLabelNode()
+        xLabel.name = "dropNumber"
+        xLabel.fontName="AvenirNext-DemiBold"
+        xLabel.fontColor = UIColor.yellow
+        xLabel.fontSize = 22.0
+        xLabel.text = "\(numberOfDrops)"
+        xLabel.position = CGPoint(x: 0, y: 2)
+        collectible.addChild(xLabel)
+        numberOfDrops -= 1;
         
         collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
         addChild(collectible)
