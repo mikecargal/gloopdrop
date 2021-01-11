@@ -66,6 +66,14 @@ extension SKSpriteNode {
             }
         }
     }
+    
+    // Used to create an endless scrolling background
+    func endlessScroll(speed: TimeInterval) {
+        let moveAction = SKAction.moveBy(x: -self.size.width,y: 0, duration: speed)
+        let resetAction = SKAction.moveBy(x: self.size.width, y: 0, duration: 0.0)
+        
+        self.run(SKAction.repeatForever(SKAction.sequence([moveAction,resetAction])))
+    }
 }
 
 extension SKScene {
@@ -76,5 +84,20 @@ extension SKScene {
     func viewBottom() -> CGFloat {
         guard let view = view else { return 0.0 }
         return convertPoint(fromView: CGPoint(x: 0.0, y: view.bounds.size.height)).y
+    }
+}
+
+extension SKNode {
+    func setupScollingView(imageNamed name: String, layer: Layer,blocks:Int,speed:TimeInterval) {
+        for i in 0..<blocks {
+            let spriteNode = SKSpriteNode(imageNamed: name)
+            spriteNode.anchorPoint = CGPoint.zero
+            spriteNode.position = CGPoint(x: CGFloat(i) * spriteNode.size.width, y: 0)
+            spriteNode.zPosition = layer.rawValue
+            spriteNode.name = name
+            
+            spriteNode.endlessScroll(speed: speed)
+            addChild(spriteNode)
+        }
     }
 }

@@ -48,6 +48,7 @@ class GameScene: SKScene {
     
     // Audio Nodes
     let musicAudioNode = SKAudioNode(fileNamed: "music.mp3")
+    let bubblesAudioNode = SKAudioNode(fileNamed: "bubbles.mp3")
 
     override func didMove(to view: SKView) {
         // set up the physics world contact delegate
@@ -63,6 +64,14 @@ class GameScene: SKScene {
         run(SKAction.wait(forDuration: 1.0), completion: { [unowned self] in
             self.audioEngine.mainMixerNode.outputVolume = 1.0
             self.musicAudioNode.run(SKAction.changeVolume(to: 0.5, duration: 2.0))
+        })
+        
+        // run a delayed action to add bubble audio to the scene
+        run(SKAction.wait(forDuration: 1.5),completion: {
+            [unowned self] in
+            self.bubblesAudioNode.autoplayLooped = true
+            self.bubblesAudioNode.run(SKAction.changeVolume(to: 0.3, duration: 0.0))
+            self.addChild(self.bubblesAudioNode)
         })
         
         let background = SKSpriteNode(imageNamed: "background_1")
@@ -93,6 +102,7 @@ class GameScene: SKScene {
         player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
         addChild(player)
+        setupGloopFlow()
 
         showMessage("Tap to start game")
     }
@@ -360,4 +370,16 @@ extension GameScene: SKPhysicsContactDelegate {
             }
         }
     }
+    // MARK: - Gloop Flow & particle effects
+
+    func setupGloopFlow() {
+        let gloopFlow = SKNode()
+        gloopFlow.name = "gloopFlow"
+        gloopFlow.zPosition = Layer.foreground.rawValue
+        gloopFlow.position = CGPoint(x: 0.0, y: -60)
+        gloopFlow.setupScollingView(imageNamed: "flow_1", layer: Layer.foreground, blocks: 3, speed: 30.0)
+        addChild(gloopFlow)
+    }
+
 }
+
