@@ -67,7 +67,7 @@ class GameScene: SKScene {
         })
         
         // run a delayed action to add bubble audio to the scene
-        run(SKAction.wait(forDuration: 1.5),completion: {
+        run(SKAction.wait(forDuration: 1.5), completion: {
             [unowned self] in
             self.bubblesAudioNode.autoplayLooped = true
             self.bubblesAudioNode.run(SKAction.changeVolume(to: 0.3, duration: 0.0))
@@ -75,6 +75,7 @@ class GameScene: SKScene {
         })
         
         let background = SKSpriteNode(imageNamed: "background_1")
+        background.name = "background"
         background.anchorPoint = CGPoint(x: 0, y: 0)
         background.position = CGPoint(x: 0, y: 0)
         background.zPosition = Layer.background.rawValue
@@ -82,6 +83,7 @@ class GameScene: SKScene {
         
         // set up foreground
         let foreground = SKSpriteNode(imageNamed: "foreground_1")
+        foreground.name = "foreground"
         foreground.anchorPoint = CGPoint(x: 0, y: 0)
         foreground.position = CGPoint(x: 0, y: 0)
         foreground.zPosition = Layer.foreground.rawValue
@@ -181,9 +183,12 @@ class GameScene: SKScene {
             return
         }
         
-        let touchedNode = atPoint(pos)
-        if touchedNode.name == "player" {
-            movingPlayer = true
+        let touchedNodes = nodes(at: pos)
+        for touchedNode in touchedNodes {
+            print("touchedNode: \(String(describing: touchedNode.name))")
+            if touchedNode.name == "player" {
+                movingPlayer = true
+            }
         }
     }
     
@@ -370,6 +375,7 @@ extension GameScene: SKPhysicsContactDelegate {
             }
         }
     }
+
     // MARK: - Gloop Flow & particle effects
 
     func setupGloopFlow() {
@@ -377,9 +383,11 @@ extension GameScene: SKPhysicsContactDelegate {
         gloopFlow.name = "gloopFlow"
         gloopFlow.zPosition = Layer.foreground.rawValue
         gloopFlow.position = CGPoint(x: 0.0, y: -60)
-        gloopFlow.setupScollingView(imageNamed: "flow_1", layer: Layer.foreground, blocks: 3, speed: 30.0)
+        gloopFlow.setupScollingView(imageNamed: "flow_1",
+                                    layer: Layer.foreground,
+                                    emitterNamed: "GloopFlow.sks",
+                                    blocks: 3,
+                                    speed: 30.0)
         addChild(gloopFlow)
     }
-
 }
-

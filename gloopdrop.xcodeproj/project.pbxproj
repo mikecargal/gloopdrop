@@ -22,6 +22,7 @@
 		279FF15325ACB581009DEA73 /* blob_mumble-3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 279FF14D25ACB581009DEA73 /* blob_mumble-3.wav */; };
 		279FF15425ACB581009DEA73 /* blob_mumble-1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 279FF14E25ACB581009DEA73 /* blob_mumble-1.wav */; };
 		279FF15925ACB75E009DEA73 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 279FF15825ACB75E009DEA73 /* music.mp3 */; };
+		279FF15D25ACC035009DEA73 /* GloopFlow.sks in Resources */ = {isa = PBXBuildFile; fileRef = 279FF15C25ACC035009DEA73 /* GloopFlow.sks */; };
 		27AAC30125A4E55B00428EA2 /* Nosifer-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		279FF14D25ACB581009DEA73 /* blob_mumble-3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "blob_mumble-3.wav"; sourceTree = "<group>"; };
 		279FF14E25ACB581009DEA73 /* blob_mumble-1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "blob_mumble-1.wav"; sourceTree = "<group>"; };
 		279FF15825ACB75E009DEA73 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
+		279FF15C25ACC035009DEA73 /* GloopFlow.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GloopFlow.sks; sourceTree = "<group>"; };
 		27AAC30025A4E55B00428EA2 /* Nosifer-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nosifer-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,6 +81,7 @@
 				27220A6225A218590023FFE7 /* AppDelegate.swift */,
 				2795869125A27F7A0009E4FB /* Collectible.swift */,
 				27220A6825A218590023FFE7 /* GameScene.swift */,
+				279FF15C25ACC035009DEA73 /* GloopFlow.sks */,
 				27AAC2FF25A4E4EA00428EA2 /* Fonts */,
 				27220A6A25A218590023FFE7 /* GameViewController.swift */,
 				27220A6C25A218590023FFE7 /* Main.storyboard */,
@@ -181,6 +184,7 @@
 				279FF15925ACB75E009DEA73 /* music.mp3 in Resources */,
 				279FF15225ACB581009DEA73 /* blob_mumble-2.wav in Resources */,
 				279FF15425ACB581009DEA73 /* blob_mumble-1.wav in Resources */,
+				279FF15D25ACC035009DEA73 /* GloopFlow.sks in Resources */,
 				279FF15125ACB581009DEA73 /* miss.wav in Resources */,
 				279FF15025ACB581009DEA73 /* collect.wav in Resources */,
 				279FF14F25ACB581009DEA73 /* bubbles.mp3 in Resources */,

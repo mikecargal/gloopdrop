@@ -88,13 +88,18 @@ extension SKScene {
 }
 
 extension SKNode {
-    func setupScollingView(imageNamed name: String, layer: Layer,blocks:Int,speed:TimeInterval) {
+    func setupScollingView(imageNamed name: String, layer: Layer,emitterNamed: String?, blocks: Int, speed: TimeInterval) {
         for i in 0..<blocks {
             let spriteNode = SKSpriteNode(imageNamed: name)
             spriteNode.anchorPoint = CGPoint.zero
             spriteNode.position = CGPoint(x: CGFloat(i) * spriteNode.size.width, y: 0)
             spriteNode.zPosition = layer.rawValue
             spriteNode.name = name
+            if let emmiterNamed = emitterNamed,
+               let particles = SKEmitterNode(fileNamed: emmiterNamed) {
+                particles.name = "particles"
+                spriteNode.addChild(particles)
+            }
             
             spriteNode.endlessScroll(speed: speed)
             addChild(spriteNode)
