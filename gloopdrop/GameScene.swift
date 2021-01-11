@@ -104,6 +104,7 @@ class GameScene: SKScene {
         // Set up a plyer
         player.position = CGPoint(x: size.width / 2, y: foreground.frame.maxY)
         player.setupConstraints(floor: foreground.frame.maxY)
+        prevDropLocation = CGFloat.random(in:marginRange())
         addChild(player)
         setupGloopFlow()
 
@@ -269,43 +270,38 @@ class GameScene: SKScene {
         gameInProgress = true
     }
     
+    func marginRange() -> ClosedRange<CGFloat> {
+        let margin = Collectible(collectibleType: CollectibleType.gloop).size.width * 2
+        let minX = frame.minX + margin
+        let maxX = frame.maxX - margin
+        return minX ... maxX
+    }
+    
     func spawnGloop() {
         let collectible = Collectible(collectibleType: CollectibleType.gloop)
+        let margins = marginRange()
+
+        let randomX = CGFloat.random(in:margins)
         
-        // set random position
-        let margin = collectible.size.width * 2
-        let dropRange = SKRange(lowerLimit: frame.minX + margin,
-                                upperLimit: frame.maxX - margin)
-        var randomX = CGFloat.random(in: dropRange.lowerLimit ... dropRange.upperLimit)
+        let distance = min(CGFloat.random(in: 50 + CGFloat(level) ... 60 + CGFloat(level)), 400)
         
-        // start enhanced drop movement
-        //let randomModifier = SKRange(lowerLimit: 50 + CGFloat(level), upperLimit: 60 * CGFloat(level))
-        let modifier = min(CGFloat.random(in: 50 + CGFloat(level) ... 60 * CGFloat(level)), 400)
-        
-        if prevDropLocation == 0.0 { prevDropLocation = randomX }
-        
-        if prevDropLocation < randomX {
-            randomX = prevDropLocation + modifier
-        } else {
-            randomX = prevDropLocation - modifier
-        }
-        
-        randomX = max(frame.minX + margin, min(frame.maxX - margin, randomX))
-        prevDropLocation = randomX
-        // end enhanced drop movement
+        let newDropLocation = prevDropLocation < randomX ?
+            max(margins.lowerBound, prevDropLocation + distance) :
+            min(margins.upperBound, prevDropLocation - distance)
         
         // add the number tag to the collectiondrop
         let xLabel = SKLabelNode()
         xLabel.name = "dropNumber"
-        xLabel.fontName="AvenirNext-DemiBold"
+        xLabel.fontName = "AvenirNext-DemiBold"
         xLabel.fontColor = UIColor.yellow
         xLabel.fontSize = 22.0
         xLabel.text = "\(numberOfDrops)"
         xLabel.position = CGPoint(x: 0, y: 2)
         collectible.addChild(xLabel)
-        numberOfDrops -= 1;
+        numberOfDrops -= 1
         
-        collectible.position = CGPoint(x: randomX, y: player.position.y * 2.5)
+        collectible.position = CGPoint(x: newDropLocation, y: player.position.y * 2.5)
+        prevDropLocation = newDropLocation
         addChild(collectible)
         collectible.drop(dropSpeed: TimeInterval(1.0), floorLevel: player.frame.minY)
     }
