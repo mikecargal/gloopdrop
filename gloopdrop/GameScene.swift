@@ -102,7 +102,7 @@ class GameScene: SKScene {
         // set up the banner
         let banner = SKSpriteNode(imageNamed: "banner")
         banner.zPosition = Layer.banner.rawValue + 1
-        banner.position = CGPoint(x: frame.midX, y: viewTop()-20)
+        banner.position = CGPoint(x: frame.midX, y: viewTop() - 20)
         banner.anchorPoint = CGPoint(x: 0.5, y: 1.0)
         addChild(banner)
         
@@ -114,7 +114,9 @@ class GameScene: SKScene {
         prevDropLocation = CGFloat.random(in: marginRange())
         addChild(player)
         setupGloopFlow()
-
+        setupStars()
+        randomSpaceShip()
+        
         showMessage("Tap to start game")
     }
     
@@ -373,6 +375,52 @@ class GameScene: SKScene {
             i += 1
         }
     }
+
+    func randomSpaceShip() {
+        let spaceship = SKSpriteNode(imageNamed: "robot")
+        spaceship.zPosition = Layer.foreground.rawValue
+        let rightToLeft = Bool.random()
+        let duration = TimeInterval(CGFloat.random(in: 5.0 ... 10.0))
+        let offLeft = CGFloat(-spaceship.size.width)
+        let offRight = CGFloat(frame.width + spaceship.size.width)
+        
+        let (start, stop) = rightToLeft ?
+            (offLeft, offRight) :
+            (offRight, offLeft)
+        spaceship.position = CGPoint(x: start, y: frame.midY + spaceship.size.height)
+        
+        let audioNode = SKAudioNode(fileNamed: "robot.wav")
+        audioNode.autoplayLooped = true
+        audioNode.run(SKAction.changeVolume(to: 1.0, duration: 0.0))
+        spaceship.addChild(audioNode)
+        
+        addChild(spaceship)
+        let wobbleAngle = CGFloat.random(in: 0.0 ... 0.8)
+        let wobbleDuration = TimeInterval(CGFloat.random(in: 0.5 ... 1.0))
+        spaceship.run(SKAction.repeatForever(SKAction.sequence([
+            SKAction.rotate(byAngle: wobbleAngle, duration: wobbleDuration / 2),
+            SKAction.rotate(byAngle: -wobbleAngle * 2, duration: wobbleDuration),
+            SKAction.rotate(byAngle: wobbleAngle, duration: wobbleDuration / 2)
+        ])))
+
+        let vertChange = CGFloat.random(in: 10.0 ... 20.0)
+        let vertDuration = TimeInterval(CGFloat.random(in: 0.25 ... 1.0))
+        spaceship.run(SKAction.repeatForever(SKAction.sequence([
+            SKAction.moveBy(x: 0.0, y: vertChange, duration: vertDuration),
+            SKAction.moveBy(x: 0.0, y: -vertChange, duration: vertDuration)
+        ])))
+        spaceship.run(SKAction.sequence([
+            SKAction.moveTo(x: stop, duration: duration),
+            SKAction.removeFromParent()
+        ]), completion: {
+            self.run(SKAction.sequence([
+                SKAction.wait(forDuration: 30, withRange: 60),
+                SKAction.run {
+                    self.randomSpaceShip()
+                }
+            ]))
+        })
+    }
 }
 
 // MARK: - COLLISION DETECTION
@@ -440,5 +488,14 @@ extension GameScene: SKPhysicsContactDelegate {
                                     blocks: 3,
                                     speed: 30.0)
         addChild(gloopFlow)
+    }
+    
+    func setupStars() {
+        if let stars = SKEmitterNode(fileNamed: "Stars.sks") {
+            stars.name = "stars"
+            stars.zPosition = Layer.foreground.rawValue
+            stars.position = CGPoint(x: frame.midX, y: frame.midY)
+            addChild(stars)
+        }
     }
 }

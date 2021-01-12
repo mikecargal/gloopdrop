@@ -12,6 +12,9 @@
 		27220A6B25A218590023FFE7 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27220A6A25A218590023FFE7 /* GameViewController.swift */; };
 		27220A6E25A218590023FFE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27220A6C25A218590023FFE7 /* Main.storyboard */; };
 		27220A7025A218590023FFE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27220A6F25A218590023FFE7 /* Assets.xcassets */; };
+		2738ECA025AE31B600816479 /* Stars.sks in Resources */ = {isa = PBXBuildFile; fileRef = 2738EC9F25AE31B600816479 /* Stars.sks */; };
+		2738ECA325AE3F2000816479 /* SpaceShip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2738ECA225AE3F2000816479 /* SpaceShip.swift */; };
+		2738ECA725AE49C200816479 /* robot.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2738ECA625AE49C200816479 /* robot.wav */; };
 		2795868C25A266290009E4FB /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2795868B25A266290009E4FB /* Player.swift */; };
 		2795868F25A266DA0009E4FB /* SpriteKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2795868E25A266DA0009E4FB /* SpriteKitHelper.swift */; };
 		2795869225A27F7A0009E4FB /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2795869125A27F7A0009E4FB /* Collectible.swift */; };
@@ -34,6 +37,9 @@
 		27220A6D25A218590023FFE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		27220A6F25A218590023FFE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27220A7125A218590023FFE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2738EC9F25AE31B600816479 /* Stars.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Stars.sks; sourceTree = "<group>"; };
+		2738ECA225AE3F2000816479 /* SpaceShip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceShip.swift; sourceTree = "<group>"; };
+		2738ECA625AE49C200816479 /* robot.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = robot.wav; sourceTree = "<group>"; };
 		2795868B25A266290009E4FB /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		2795868E25A266DA0009E4FB /* SpriteKitHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteKitHelper.swift; sourceTree = "<group>"; };
 		2795869125A27F7A0009E4FB /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
@@ -80,12 +86,14 @@
 			children = (
 				27220A6225A218590023FFE7 /* AppDelegate.swift */,
 				2795869125A27F7A0009E4FB /* Collectible.swift */,
+				2738ECA225AE3F2000816479 /* SpaceShip.swift */,
 				27220A6825A218590023FFE7 /* GameScene.swift */,
 				279FF15C25ACC035009DEA73 /* GloopFlow.sks */,
 				27AAC2FF25A4E4EA00428EA2 /* Fonts */,
 				27220A6A25A218590023FFE7 /* GameViewController.swift */,
 				27220A6C25A218590023FFE7 /* Main.storyboard */,
 				27220A6F25A218590023FFE7 /* Assets.xcassets */,
+				2738EC9F25AE31B600816479 /* Stars.sks */,
 				279FF14825ACB581009DEA73 /* Sounds */,
 				279FF15725ACB75E009DEA73 /* Music */,
 				2795868B25A266290009E4FB /* Player.swift */,
@@ -98,6 +106,7 @@
 		279FF14825ACB581009DEA73 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				2738ECA625AE49C200816479 /* robot.wav */,
 				279FF14925ACB581009DEA73 /* bubbles.mp3 */,
 				279FF14A25ACB581009DEA73 /* collect.wav */,
 				279FF14B25ACB581009DEA73 /* miss.wav */,
@@ -186,6 +195,8 @@
 				279FF15425ACB581009DEA73 /* blob_mumble-1.wav in Resources */,
 				279FF15D25ACC035009DEA73 /* GloopFlow.sks in Resources */,
 				279FF15125ACB581009DEA73 /* miss.wav in Resources */,
+				2738ECA725AE49C200816479 /* robot.wav in Resources */,
+				2738ECA025AE31B600816479 /* Stars.sks in Resources */,
 				279FF15025ACB581009DEA73 /* collect.wav in Resources */,
 				279FF14F25ACB581009DEA73 /* bubbles.mp3 in Resources */,
 				27220A6E25A218590023FFE7 /* Main.storyboard in Resources */,
@@ -204,6 +215,7 @@
 			files = (
 				2795868C25A266290009E4FB /* Player.swift in Sources */,
 				27220A6925A218590023FFE7 /* GameScene.swift in Sources */,
+				2738ECA325AE3F2000816479 /* SpaceShip.swift in Sources */,
 				2795869225A27F7A0009E4FB /* Collectible.swift in Sources */,
 				27220A6B25A218590023FFE7 /* GameViewController.swift in Sources */,
 				2795868F25A266DA0009E4FB /* SpriteKitHelper.swift in Sources */,
